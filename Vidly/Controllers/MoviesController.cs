@@ -1,12 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Vidly.Models;
 
 namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
-        public IActionResult Index()
+        //Get: Movies/Random
+        public IActionResult Random()
         {
-            return View();
+            var movie = new Movie()
+            {
+                Name = "Shrek!"
+            };
+            return View(movie);
         }
     }
 }
