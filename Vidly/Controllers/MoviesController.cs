@@ -36,21 +36,37 @@ namespace Vidly.Controllers
         }
 
         //movies
-        public IActionResult Index(int? pageIndex, string sortBy)
-        {
-            if (!pageIndex.HasValue)
-                pageIndex = 1;
+        //public IActionResult Index(int? pageIndex, string sortBy)
+        //{
+        //    if (!pageIndex.HasValue)
+        //        pageIndex = 1;
 
-            if (string.IsNullOrWhiteSpace(sortBy))
-                sortBy = "Name";
+        //    if (string.IsNullOrWhiteSpace(sortBy))
+        //        sortBy = "Name";
 
-            return Content($"pageIndex={pageIndex} & sortBy={sortBy}");
-        }
+        //    return Content($"pageIndex={pageIndex} & sortBy={sortBy}");
+        //}
 
         [Route("movies/released/{year}/{month:range(1,12)}")]
         public IActionResult ByReleaseDate(int year, int month)
         {
             return Content($"{year}/{month}");
+        }
+
+        public IActionResult Index()
+        {
+            var movies = GetMovies();
+
+            return View(movies);
+        }
+
+        private IEnumerable<Movie> GetMovies()
+        {
+            return new List<Movie>
+            {
+                new Movie {Id = 1, Name = "StarWars" },
+                new Movie {Id = 2, Name = "Zombie" }
+            };
         }
     }
 }
