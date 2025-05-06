@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore;
 using Vidly.Data;
 using Vidly.Models;
 
@@ -32,8 +33,10 @@ namespace Vidly.Controllers
 
         public IActionResult Index()
         {
-
-            var customers = _context.Customers.ToList();
+            /*Eager Loading
+             le principe de telecharger les tableaux relié
+            lors du chargement de l'app*/
+            var customers = _context.Customers.Include(c => c.MembershipType).ToList();
             return View(customers);
         }
 
