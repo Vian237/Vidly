@@ -12,6 +12,10 @@ namespace Vidly.Data
                 .Property(p => p.Name)
                 .IsRequired()
                 .HasMaxLength(255);
+
+            builder
+                .Property(p => p.Birthdate)
+                .HasColumnType("date");
         }
     }
 }
