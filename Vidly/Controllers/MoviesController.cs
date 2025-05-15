@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Vidly.Data;
 using Vidly.Models;
 using Vidly.ViewModels;
 
@@ -6,9 +8,21 @@ namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
+        private readonly AppDbContext _context;
+
+        public MoviesController()
+        {
+            _context = new AppDbContext();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+            base.Dispose(disposing);
+        }
         //Get: Movies/Random
         public IActionResult Random()
-        {
+        {           
             var movie = new Movie() { Name = "Shrek!" };
             var customers = new List<Customer>
             {
@@ -55,9 +69,18 @@ namespace Vidly.Controllers
 
         public IActionResult Index()
         {
-            var movies = GetMovies();
+            var movies = _context.Movies.Include(m => m.Genre).ToList();
 
             return View(movies);
+        }
+
+        public IActionResult Details(int id)
+        {
+            var movie = _context.Movies.Include(m => m.Genre).SingleOrDefault(m => m.Id == id);
+            if (movie == null)
+                return NotFound();
+
+            return View(movie);
         }
 
         private IEnumerable<Movie> GetMovies()

@@ -6,6 +6,7 @@ namespace Vidly.Data
     public class AppDbContext : DbContext
     {
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<Movie> Movies { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -18,6 +19,7 @@ namespace Vidly.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+            modelBuilder.ApplyConfiguration(new MovieConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }
