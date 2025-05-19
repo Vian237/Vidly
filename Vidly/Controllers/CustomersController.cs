@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Vidly.Data;
 using Vidly.Models;
+using Vidly.ViewModels;
 
 namespace Vidly.Controllers
 {
@@ -52,7 +53,13 @@ namespace Vidly.Controllers
 
         public IActionResult New()
         {
-            return View();
+            var membershipTypes = _context.MembershipType.ToList();
+            var viewModel = new NewCustomerViewModel
+            {
+                MembershipTypes = membershipTypes
+            };
+
+            return View(viewModel);
         }
 
     }
