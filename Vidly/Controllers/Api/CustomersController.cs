@@ -35,7 +35,7 @@ namespace Vidly.Controllers.Api
             if (customer == null)
                 return NotFound();
 
-            return _mapper.Map<CustomerDto>(customer);
+            return Ok(_mapper.Map<CustomerDto>(customer));
         }
 
         //Post: api/customers
@@ -55,8 +55,8 @@ namespace Vidly.Controllers.Api
             customerDto.Id = customer.Id; // Set the ID from the created entity
 
             // Return the created customer with a 201 Created response
-            //return CreatedAtAction(nameof(GetCustomer), new { id = customer.Id }, customer);
-            return customerDto;
+            return CreatedAtAction(nameof(GetCustomer), new { id = customer.Id }, customerDto);
+            //return customerDto;
         }
 
         //Put: api/customers/5

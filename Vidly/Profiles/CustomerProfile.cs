@@ -9,7 +9,7 @@ namespace Vidly.Profiles
         public CustomerProfile()
         {
             CreateMap<Customer, CustomerDto>();
-            //CreateMap<CustomerDto, Customer>();
+            CreateMap<CustomerDto, Customer>();
         }
     }
 }
