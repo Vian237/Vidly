@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Vidly.Data;
+using Vidly.DTOs;
 using Vidly.Models;
 
 namespace Vidly.Controllers.Api
@@ -11,49 +13,57 @@ namespace Vidly.Controllers.Api
     public class CustomersController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CustomersController()
+        public CustomersController(IMapper mapper)
         {
             _context = new AppDbContext();
+            _mapper = mapper;
         }
 
         //Get: api/customers
-        public IEnumerable<Customer> GetCustomers()
+        public IEnumerable<CustomerDto> GetCustomers()
         {
-            return _context.Customers.Include(c => c.MembershipType).ToList();
+            return _context.Customers.ToList().Select(c => _mapper.Map<CustomerDto>(c));
         }
 
         //Get: api/customers/5
         [HttpGet("{id}")]
-        public ActionResult<Customer> GetCustomer(int id)
+        public ActionResult<CustomerDto> GetCustomer(int id)
         {
-            var customer = _context.Customers.Include(c => c.MembershipType).SingleOrDefault(c => c.Id == id);
+            var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
             if (customer == null)
                 return NotFound();
 
-            return customer;
+            return _mapper.Map<CustomerDto>(customer);
         }
 
         //Post: api/customers
         [HttpPost]
-        public ActionResult<Customer> CreateCustomer(Customer customer)
+        public ActionResult<CustomerDto> CreateCustomer(CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // Map the DTO to the Customer entity
+            var customer = _mapper.Map<Customer>(customerDto);
+
             _context.Customers.Add(customer);
             _context.SaveChanges();
 
+            // Optionally, you can return the created customer with its ID
+            customerDto.Id = customer.Id; // Set the ID from the created entity
+
             // Return the created customer with a 201 Created response
             //return CreatedAtAction(nameof(GetCustomer), new { id = customer.Id }, customer);
-            return customer;
+            return customerDto;
         }
 
         //Put: api/customers/5
         [HttpPut("{id}")]
-        public ActionResult UpdateCustomer(int id, Customer customer)
+        public ActionResult UpdateCustomer(int id, CustomerDto customerDto)
         {
-            if (id != customer.Id)
+            if (id != customerDto.Id)
                 return BadRequest();
 
             if (!ModelState.IsValid)
@@ -64,12 +74,13 @@ namespace Vidly.Controllers.Api
             if (customerInDb == null)
                 return NotFound();
 
-            customerInDb.Name = customer.Name;
-            customerInDb.Birthdate = customer.Birthdate;
-            customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
-            customerInDb.MembershipTypeId = customer.MembershipTypeId;
+            // Map the updated properties from the DTO to the existing entity
+            // This assumes that the DTO has the same properties as the Customer entity
+            // If you have different property names, you can use AutoMapper to map them
+            _mapper.Map(customerDto, customerInDb);
 
             _context.SaveChanges();
+
             return NoContent();
         }
 
