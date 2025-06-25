@@ -21,5 +21,7 @@ namespace Vidly.DTOs
 
         [Required(ErrorMessage = "Genre is required.")]
         public byte GenreId { get; set; }
+
+        public GenreDto Genre { get; set; }
     }
 }

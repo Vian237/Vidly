@@ -10,6 +10,7 @@ namespace Vidly.Profiles
         {
             CreateMap<Movie, MovieDto>();
             CreateMap<MovieDto, Movie>();
+            CreateMap<Genre, GenreDto>();
         }
     }
 }
