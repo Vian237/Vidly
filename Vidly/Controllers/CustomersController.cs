@@ -13,9 +13,9 @@ namespace Vidly.Controllers
 
         private readonly AppDbContext _context;
 
-        public CustomersController()
+        public CustomersController(AppDbContext context)
         {
-            _context = new AppDbContext();
+            _context = context;
         }
 
         protected override void Dispose(bool disposing)
